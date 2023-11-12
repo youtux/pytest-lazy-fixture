@@ -124,7 +124,7 @@ def normalize_call(callspec, metafunc, valtype, used_keys):
             newmetafunc._arg2fixturedefs.update(arg2fixturedefs)
             newmetafunc._calls = [callspec]
             fm.pytest_generate_tests(newmetafunc)
-            normalize_metafunc_calls(newmetafunc, valtype, used_keys | set([arg]))
+            normalize_metafunc_calls(newmetafunc, valtype, used_keys | {arg})
             return newmetafunc._calls
 
         used_keys.add(arg)
@@ -161,8 +161,7 @@ def _sorted_argnames(params, fixturenames):
         yield name
 
     if argnames:
-        for name in argnames:
-            yield name
+        yield from argnames
 
 
 def _tree_to_list(trees, leave):
@@ -191,7 +190,7 @@ class LazyFixture(object):
         self.name = name
 
     def __repr__(self):
-        return '<{} "{}">'.format(self.__class__.__name__, self.name)
+        return f'<{self.__class__.__name__} "{self.name}">'
 
     def __eq__(self, other):
         if isinstance(other, LazyFixture):
